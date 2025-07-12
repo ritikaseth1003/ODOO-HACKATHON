@@ -84,23 +84,18 @@ export const itemsAPI = {
     return apiRequest(`/items/${id}`);
   },
 
-  create: async (itemData) => {
+  create: async (itemData, images = []) => {
     const formData = new FormData();
-    
     // Add text fields
     Object.keys(itemData).forEach(key => {
-      if (key === 'images') {
-        // Handle images separately
-        itemData[key].forEach(image => {
-          formData.append('images', image);
-        });
-      } else if (key === 'tags') {
+      if (key === 'tags') {
         formData.append('tags', JSON.stringify(itemData[key]));
       } else {
         formData.append(key, itemData[key]);
       }
     });
-
+    // Add images (raw File objects)
+    images.forEach(file => formData.append('images', file));
     const token = getAuthToken();
     const response = await fetch(`${API_BASE_URL}/items`, {
       method: 'POST',
@@ -109,12 +104,10 @@ export const itemsAPI = {
       },
       body: formData,
     });
-
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || 'Failed to create item');
     }
-
     return data;
   },
 

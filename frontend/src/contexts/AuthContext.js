@@ -42,7 +42,10 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.login({ email, password });
       console.log('Login API response:', response);
       if (response && response.data) {
-        const userData = response.data.user;
+        let userData = response.data.user;
+        if (userData && userData.id && !userData._id) {
+          userData._id = userData.id;
+        }
         const token = response.data.token;
         localStorage.setItem('token', token);
         setUser(userData);
@@ -67,7 +70,10 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.register(userData);
       console.log('Register API response:', response);
       if (response && response.data) {
-        const newUser = response.data.user;
+        let newUser = response.data.user;
+        if (newUser && newUser.id && !newUser._id) {
+          newUser._id = newUser.id;
+        }
         const token = response.data.token;
         localStorage.setItem('token', token);
         setUser(newUser);

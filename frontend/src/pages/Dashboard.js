@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { User, Gift, Package, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { itemsAPI } from '../services/api';
 
 const Dashboard = () => {
   const { currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
+  const [userItems, setUserItems] = useState([]);
+  const [itemsError, setItemsError] = useState(null);
+
+  useEffect(() => {
+    console.log('Dashboard currentUser:', currentUser);
+    if (currentUser && currentUser._id) {
+      itemsAPI.getUserItems(currentUser._id)
+        .then(data => {
+          if (data && data.items) setUserItems(data.items);
+          setItemsError(null);
+        })
+        .catch(err => {
+          setItemsError(err.message || 'Failed to get user items');
+        });
+    }
+  }, [currentUser]);
 
   // Mock data - replace with real data from backend
-  const userItems = [
-    {
-      id: 1,
-      title: "Vintage Denim Jacket",
-      status: "available",
-      image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=300&h=300&fit=crop",
-      createdAt: "2024-01-15"
-    },
-    {
-      id: 2,
-      title: "Summer Dress",
-      status: "pending",
-      image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop",
-      createdAt: "2024-01-10"
-    }
-  ];
-
   const swapRequests = [
     {
       id: 1,
@@ -188,8 +188,10 @@ const Dashboard = () => {
                   Add New Item
                 </Link>
               </div>
-              
-              {userItems.length === 0 ? (
+              {itemsError && (
+                <div className="text-red-600 mb-4">{itemsError}</div>
+              )}
+              {userItems.length === 0 && !itemsError ? (
                 <div className="text-center py-8">
                   <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-600 mb-4">You haven't listed any items yet.</p>
@@ -197,10 +199,10 @@ const Dashboard = () => {
                     List Your First Item
                   </Link>
                 </div>
-              ) : (
+              ) : userItems.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {userItems.map((item) => (
-                    <div key={item.id} className="border rounded-lg overflow-hidden">
+                    <div key={item.id || item._id} className="border rounded-lg overflow-hidden">
                       <img
                         src={item.image}
                         alt={item.title}
