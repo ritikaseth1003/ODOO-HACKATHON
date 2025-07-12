@@ -1,48 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Heart, Users, Award, TrendingUp } from 'lucide-react';
+import { ArrowRight, Heart, Users, Award, TrendingUp, ArrowLeft } from 'lucide-react';
+
+// Use the same items as BrowseItems
+const featuredItems = [
+  {
+    id: 1,
+    title: "Vintage Denim Jacket",
+    category: "Outerwear",
+    image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=400&h=400&fit=crop",
+    points: 25
+  },
+  {
+    id: 2,
+    title: "Summer Dress",
+    category: "Dresses",
+    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop",
+    points: 30
+  },
+  {
+    id: 3,
+    title: "Casual Sneakers",
+    category: "Footwear",
+    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
+    points: 20
+  },
+  {
+    id: 4,
+    title: "Winter Sweater",
+    category: "Tops",
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
+    points: 35
+  },
+  {
+    id: 5,
+    title: "Leather Handbag",
+    category: "Accessories",
+    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=400&fit=crop",
+    points: 40
+  },
+  {
+    id: 6,
+    title: "Formal Shirt",
+    category: "Tops",
+    image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&h=400&fit=crop",
+    points: 15
+  }
+];
 
 const LandingPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Mock featured items data
-  const featuredItems = [
-    {
-      id: 1,
-      title: "Vintage Denim Jacket",
-      category: "Outerwear",
-      image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=400&h=400&fit=crop",
-      points: 25
-    },
-    {
-      id: 2,
-      title: "Summer Dress",
-      category: "Dresses",
-      image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop",
-      points: 30
-    },
-    {
-      id: 3,
-      title: "Casual Sneakers",
-      category: "Footwear",
-      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
-      points: 20
-    },
-    {
-      id: 4,
-      title: "Winter Sweater",
-      category: "Tops",
-      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
-      points: 35
-    }
-  ];
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % featuredItems.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(timer);
-  }, [featuredItems.length]);
+  }, []);
+
+  const goToPrev = () => {
+    setCurrentSlide((prev) => (prev === 0 ? featuredItems.length - 1 : prev - 1));
+  };
+
+  const goToNext = () => {
+    setCurrentSlide((prev) => (prev + 1) % featuredItems.length);
+  };
 
   return (
     <div className="min-h-screen">
@@ -107,46 +129,49 @@ const LandingPage = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Items</h2>
             <p className="text-gray-600">Discover amazing pieces from our community</p>
           </div>
-          
-          <div className="relative">
-            <div className="flex overflow-hidden">
-              {featuredItems.map((item, index) => (
-                <div
-                  key={item.id}
-                  className={`flex-shrink-0 w-full transition-transform duration-500 ease-in-out ${
-                    index === currentSlide ? 'translate-x-0' : 'translate-x-full'
-                  }`}
-                >
-                  <div className="max-w-md mx-auto">
-                    <div className="card">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-64 object-cover rounded-lg mb-4"
-                      />
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{item.title}</h3>
-                      <p className="text-gray-600 mb-2">{item.category}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-primary-600 font-semibold">{item.points} points</span>
-                        <Link to={`/item/${item.id}`} className="btn-primary">
-                          View Details
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Carousel Indicators */}
-            <div className="flex justify-center mt-8 space-x-2">
-              {featuredItems.map((_, index) => (
+          <div className="relative flex flex-col items-center">
+            {/* Carousel */}
+            <div className="w-full max-w-md mx-auto">
+              <div className="relative">
+                <img
+                  src={featuredItems[currentSlide].image}
+                  alt={featuredItems[currentSlide].title}
+                  className="w-full h-64 object-cover rounded-lg mb-4"
+                />
+                {/* Left Arrow */}
                 <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    index === currentSlide ? 'bg-primary-600' : 'bg-gray-300'
-                  }`}
+                  onClick={goToPrev}
+                  className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white bg-opacity-80 rounded-full p-2 shadow hover:bg-primary-100"
+                  aria-label="Previous"
+                >
+                  <ArrowLeft className="w-5 h-5 text-gray-700" />
+                </button>
+                {/* Right Arrow */}
+                <button
+                  onClick={goToNext}
+                  className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white bg-opacity-80 rounded-full p-2 shadow hover:bg-primary-100"
+                  aria-label="Next"
+                >
+                  <ArrowRight className="w-5 h-5 text-gray-700" />
+                </button>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">{featuredItems[currentSlide].title}</h3>
+              <p className="text-gray-600 mb-2">{featuredItems[currentSlide].category}</p>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-primary-600 font-semibold">{featuredItems[currentSlide].points} points</span>
+                <Link to={`/item/${featuredItems[currentSlide].id}`} className="btn-primary">
+                  View Details
+                </Link>
+              </div>
+            </div>
+            {/* Carousel Indicators */}
+            <div className="flex justify-center mt-4 space-x-2">
+              {featuredItems.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`w-3 h-3 rounded-full ${currentSlide === idx ? 'bg-primary-600' : 'bg-gray-300'}`}
+                  aria-label={`Go to slide ${idx + 1}`}
                 />
               ))}
             </div>
