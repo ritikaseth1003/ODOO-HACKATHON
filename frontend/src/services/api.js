@@ -70,6 +70,7 @@ export const authAPI = {
 
 // Items API
 export const itemsAPI = {
+  
   getAll: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     return apiRequest(`/items?${queryString}`);
