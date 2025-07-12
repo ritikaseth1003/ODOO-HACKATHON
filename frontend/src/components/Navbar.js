@@ -36,7 +36,11 @@ const Navbar = () => {
               <Search className="w-4 h-4 mr-1" />
               Browse Items
             </Link>
-            
+            {/* Admin Panel button always visible */}
+            <Link to="/admin-login" className="text-gray-700 hover:text-primary-600 flex items-center">
+              <Shield className="w-4 h-4 mr-1" />
+              Admin Panel
+            </Link>
             {currentUser ? (
               <>
                 <Link to="/add-item" className="text-gray-700 hover:text-primary-600 flex items-center">
@@ -103,7 +107,14 @@ const Navbar = () => {
             >
               Browse Items
             </Link>
-            
+            {/* Admin Panel button always visible */}
+            <Link
+              to="/admin-login"
+              className="block px-3 py-2 text-gray-700 hover:text-primary-600"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Admin Panel
+            </Link>
             {currentUser ? (
               <>
                 <Link
