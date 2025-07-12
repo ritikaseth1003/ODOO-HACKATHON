@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Upload, X, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { itemsAPI } from '../services/api';
 
 const AddItem = () => {
   const { currentUser } = useAuth();
@@ -131,16 +132,27 @@ const AddItem = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) return;
-
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast.success('Item listed successfully!');
-      navigate('/dashboard');
+      const itemData = {
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        size: formData.size,
+        condition: formData.condition,
+        points: formData.points,
+        tags: formData.tags
+      };
+      const imageFiles = images.map(img => img.file);
+      const token = currentUser?.token || localStorage.getItem('token');
+      const response = await itemsAPI.create(itemData, imageFiles, token);
+      if (response.success) {
+        toast.success('Item listed successfully!');
+        navigate('/dashboard');
+      } else {
+        toast.error(response.message || 'Failed to list item. Please try again.');
+      }
     } catch (error) {
       toast.error('Failed to list item. Please try again.');
     } finally {

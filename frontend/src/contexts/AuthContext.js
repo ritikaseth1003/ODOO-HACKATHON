@@ -39,14 +39,19 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       setLoading(true);
-      
       const response = await authAPI.login({ email, password });
-      const { user: userData, token } = response.data;
-      
-      localStorage.setItem('token', token);
-      setUser(userData);
-      
-      return { success: true };
+      console.log('Login API response:', response);
+      if (response && response.data) {
+        const userData = response.data.user;
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+        setUser(userData);
+        return { success: true };
+      } else {
+        const errorMsg = response && response.message ? response.message : 'Invalid login response';
+        setError(errorMsg);
+        return { success: false, error: errorMsg };
+      }
     } catch (error) {
       setError(error.message);
       return { success: false, error: error.message };
@@ -59,14 +64,19 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       setLoading(true);
-      
       const response = await authAPI.register(userData);
-      const { user: newUser, token } = response.data;
-      
-      localStorage.setItem('token', token);
-      setUser(newUser);
-      
-      return { success: true };
+      console.log('Register API response:', response);
+      if (response && response.data) {
+        const newUser = response.data.user;
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+        setUser(newUser);
+        return { success: true };
+      } else {
+        const errorMsg = response && response.message ? response.message : 'Invalid register response';
+        setError(errorMsg);
+        return { success: false, error: errorMsg };
+      }
     } catch (error) {
       setError(error.message);
       return { success: false, error: error.message };
@@ -120,6 +130,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    currentUser: user,
     loading,
     error,
     login,
