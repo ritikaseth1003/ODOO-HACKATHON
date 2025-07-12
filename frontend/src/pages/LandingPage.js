@@ -18,21 +18,21 @@ const LandingPage = () => {
       id: 2,
       title: "Summer Dress",
       category: "Dresses",
-      image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=400&h=400&fit=crop",
       points: 30
     },
     {
       id: 3,
       title: "Casual Sneakers",
       category: "Footwear",
-      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=400&h=400&fit=crop",
       points: 20
     },
     {
       id: 4,
       title: "Winter Sweater",
       category: "Tops",
-      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=400&h=400&fit=crop",
       points: 35
     }
   ];
@@ -120,7 +120,7 @@ const LandingPage = () => {
                   <div className="max-w-md mx-auto">
                     <div className="card">
                       <img
-                        src={item.image}
+                        src={item.image || "https://via.placeholder.com/400x400?text=No+Image"}
                         alt={item.title}
                         className="w-full h-64 object-cover rounded-lg mb-4"
                       />
